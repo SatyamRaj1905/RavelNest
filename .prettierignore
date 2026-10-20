@@ -1,0 +1,9 @@
+node_modules
+.next
+coverage
+playwright-report
+test-results
+artifacts
+package-lock.json
+FIRST_ATTEMPT_98_PLAYBOOK.md
+next-env.d.ts
