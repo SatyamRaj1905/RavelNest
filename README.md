@@ -1,110 +1,261 @@
 # RavelNest
 
-**Bring people together. Keep the planning together.**
+### Bring people together. Keep the planning together.
 
-RavelNest is a GenAI-powered planning studio for weddings, birthdays, and community events. Turn an event brief into a practical budget, dated checklist, vendor requirements, and personalized ideas, then manage the plan in one workspace.
+RavelNest is a GenAI-powered planning studio for weddings, birthdays, and community events. It turns an event brief into a connected budget, timeline, vendor checklist, and collection of personalized ideas, with a workspace to carry those plans through.
 
-Built for the **Google Promptwars** hackathon with Next.js, React, TypeScript, and plain CSS. The project follows [FIRST_ATTEMPT_98_PLAYBOOK.md](FIRST_ATTEMPT_98_PLAYBOOK.md); that engineering target is not an independently awarded score.
+Built for **Google Promptwars** using Next.js, React, TypeScript, Google Gemini, and plain CSS. The planning engine calculates the commitments; Gemini adds the personal touches.
 
-![RavelNest desktop planning studio with connected budget, timeline, and assistant views](docs/screenshots/overview.png)
+[Explore the product](#the-product) · [Try the showcase](#three-minute-showcase) · [See the architecture](#how-ravelnest-works) · [Run locally](#local-setup) · [Review the results](#verification)
 
-[View the mobile workspace](docs/screenshots/mobile.png). These screenshots show the local sample workspace, not a public deployment.
+![RavelNest event-planning workspace with budget, timeline, inspiration, and planning companion](docs/screenshots/overview.png)
 
-## The problem
+_The local sample workspace. [See the mobile layout](docs/screenshots/mobile.png)._
 
-Event planning spreads decisions across spreadsheets, messages, and inspiration boards. A beautiful idea becomes difficult to execute when costs, deadlines, and vendor requirements do not stay connected.
+## The product
 
-RavelNest gives hosts a coherent starting plan and a place to act on it. Weddings, birthdays, and community events receive different planning templates. Budgets and dates come from deterministic rules; Gemini can enrich the explanation and ideas without changing the underlying commitments.
+Planning a celebration means keeping creative choices, spending, deadlines, and vendor conversations aligned. Those decisions often end up scattered across spreadsheets, messages, and saved inspiration.
 
-## What you can do
+RavelNest brings them into one event workspace:
 
-- Create an event with a date, guest count, budget, currency, location, and personal vision.
-- Preview a generated plan and explicitly save it to your workspace.
-- Track allocated and actual spending, complete timeline tasks, maintain vendor checklists, and save ideas.
-- Use the assistant to explore another planning direction before accepting changes.
-- Keep working through the supported demo fallback when AI credentials or the network are unavailable after the app has loaded.
-- Return to saved events in the same browser through validated local storage.
-- Export the current plan as Markdown to keep a portable copy of budgets, tasks, vendors, and ideas.
+- **Start with your occasion.** Add the event type, date, guest count, budget, currency, location, and vision.
+- **Get a practical first plan.** Review category allocations, dated milestones, vendor requirements, and ideas tailored to the occasion.
+- **Make it yours with Gemini.** Explore personal, budget-conscious, or sustainable directions through the planning companion.
+- **Keep decisions connected.** Record spending, complete tasks, update vendor progress, and save inspiration against the same event.
+- **Stay in control.** Preview a new plan before saving it and review assistant suggestions before applying them.
+- **Keep a portable copy.** Export the active event as Markdown, including its budget, checklist, vendor notes, and ideas.
 
-The workspace has six views: **Overview, My events, Budget, Timeline, Vendors, and Inspiration**. Vendor entries are planning checklists; they are not verified businesses, live quotes, or bookings. Plans are estimates for the host to review.
+The complete planning journey also works in labeled demo mode when Gemini is unavailable. Budget figures are estimates to review, and vendor entries describe planning requirements rather than verified businesses or bookings.
 
-## Quick start
+## At a glance
 
-Use Node.js 22 or newer and npm. Copy `.env.example` only when `.env.local` does not already exist; preserve an existing file and its credentials. From the repository root:
+| Event categories                      | Connected views | Supported currencies | AI integration                              |
+| ------------------------------------- | --------------- | -------------------- | ------------------------------------------- |
+| Weddings, birthdays, community events | 6               | INR, USD, EUR, GBP   | Google Gemini with a deterministic fallback |
 
-```bash
-npm ci
-cp .env.example .env.local
-npm run dev
+Each event type has its own planning blueprint. Budget allocations include a contingency and add up exactly to the entered total; milestone dates work backward from the event date.
+
+## Connected workspace
+
+| View            | What it helps you do                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| **Overview**    | Review the active event, budget snapshot, upcoming tasks, inspiration, and planning companion. |
+| **My events**   | Create an occasion, switch between saved events, and manage the browser's event collection.    |
+| **Budget**      | Compare allocated and actual spending across categories.                                       |
+| **Timeline**    | Filter milestones and mark planning tasks complete.                                            |
+| **Vendors**     | Track requirements from first contact to booked status, with notes and filters.                |
+| **Inspiration** | Browse and save ideas for the active event.                                                    |
+
+Updates flow through the same event record, so progress stays consistent across views. Saved plans return when you reopen the same browser and origin.
+
+## Three-minute showcase
+
+1. **Create a celebration.** Choose **Create event**, select **Birthday**, and enter a future date, guest count, budget, and location. For the vision, try: “A garden birthday with vegetarian food, reusable decorations, and activities for children.”
+2. **Review the preview.** Choose **Generate plan**. Inspect the summary, total budget, task count, ideas, and visible source label. Select **Save event** to open the full plan.
+3. **Move the plan forward.** Review category allocations in **Budget** and dated milestones in **Timeline**. Record a cost, complete a task, add a note in **Vendors**, and save an idea in **Inspiration**.
+4. **Explore another direction.** Ask the planning companion for personal touches using seasonal flowers and reusable decor. Review the response, then choose **Apply suggestions** to keep it.
+5. **Return and share.** Reload to confirm browser persistence, then export the plan as Markdown.
+
+Successful live requests show **Personalized with Gemini** or **Gemini suggestions**. Fallback results show **Demo planning engine** or **Demo suggestions**. Both paths provide a usable plan.
+
+## How RavelNest works
+
+```mermaid
+flowchart TD
+    B[Event brief and preferences] --> V[Validate the request]
+    V --> P[Generate the canonical plan]
+    P --> G[Gemini summary and ideas]
+    G --> N[Validate the narrative]
+    N --> R[Review the preview]
+    P -->|AI unavailable| F[Deterministic fallback]
+    G -. Provider failure .-> F
+    N -. Invalid output .-> F
+    F --> R
+    R --> S[User saves or applies]
+    S --> W[Browser workspace]
 ```
 
-Open [http://localhost:3000](http://localhost:3000). No key, database, account, or external design service is required for demo mode. For optional Gemini setup, follow [Setup.md](Setup.md). For hosting, follow [Deploy.md](Deploy.md).
+### Clear ownership of planning decisions
 
-[Explain.md](Explain.md) walks through live Gemini setup, model selection, environment variables, and development versus production behavior.
+| The planning engine owns                    | Gemini contributes                        |
+| ------------------------------------------- | ----------------------------------------- |
+| Exact category allocations and contingency  | A concise event summary                   |
+| Milestone dates and task definitions        | Personalized celebration ideas            |
+| Vendor requirement categories               | Suggestions shaped by the event's vision  |
+| Identifiers, validation, and fallback plans | Structured text that must pass validation |
 
-## A two-minute demo
+Applying assistant suggestions preserves recorded spending, completed tasks, vendor progress, and saved-idea selections. Generated text does not independently change those operational details.
 
-1. Choose **Create event** and enter a wedding, birthday, or community event brief.
-2. Choose **Generate plan**. Review its source label, allocations, timeline, and ideas.
-3. Choose **Save event**, then update a cost, complete a task, and change a vendor status.
-4. Reload the page to confirm that your workspace persists in this browser.
-5. Ask the assistant for an idea matching the event's vision. Review the result before saving it.
+### Bounded AI requests and visible outcomes
 
-## How it works
+- Gemini runs on the server through its REST API; credentials stay out of the browser.
+- Request and response contracts are validated with Zod, with structured JSON output requested from the model.
+- The provider has a **25-second overall deadline**. At most one `5xx` retry shares that deadline; provider `429` responses are not immediately retried.
+- The browser request has a **35-second deadline**, and the planning route requests a **45-second** hosting allowance.
+- Classified failures produce safe notices for timeouts, quota limits, access problems, and invalid output while retaining the canonical fallback.
+- `/api/health` reports configuration presence only. A fresh response with `"source": "gemini"` confirms successful AI generation for that request.
 
-```text
-Event brief → runtime validation → deterministic plan
-                                      ↓
-                         optional Gemini narrative enrichment
-                                      ↓
-                         validated preview → user saves
+## Engineering approach
 
-Provider/network failure → same canonical deterministic plan
-```
+- **Canonical domain rules:** allocations, dates, updates, identifiers, and fallback behavior have shared owners instead of separate UI and server implementations.
+- **Strict boundaries:** TypeScript, runtime schemas, server-only adapters, and automated dependency checks keep application layers separate.
+- **Maintainability limits:** production linting enforces complexity 10, 60 lines per function excluding comments and blank lines, 400 lines per file, and zero warnings.
+- **Measured asset limits:** production builds check raw and gzip budgets for emitted JavaScript and CSS.
+- **Resilient interaction:** cancellable generation, stale-response protection, preserved drafts, and browser-storage recovery support the planning journey.
+- **Accessible interaction:** semantic controls, keyboard navigation, dialog focus handling, visible focus, reduced-motion styles, and responsive layouts are covered by component and browser checks.
+- **Production protection:** exact-origin validation, bounded payloads, security headers, and a shared Redis limiter protect public AI requests. Live requests fail closed when production rate limiting is unavailable.
 
-| Layer                | Technology and responsibility                                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| Interface            | React 19, semantic HTML, plain CSS, Lucide icons                                              |
-| Full-stack framework | Next.js 16 App Router and same-origin route handlers                                          |
-| Contracts            | Strict TypeScript and Zod runtime validation                                                  |
-| Planning             | Pure rules for exact allocations, dated tasks, vendors, and ideas                             |
-| AI                   | Server-only Gemini REST integration; optional `GEMINI_API_KEY`                                |
-| Persistence          | Browser-local workspace with bounded collections and validation                               |
-| Verification         | ESLint, Prettier, Vitest, Playwright, axe, architecture boundaries, production bundle budgets |
+## Technology stack
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for trust boundaries and canonical ownership.
-
-The build rejects dependency cycles and invalid layer imports before compiling. GitHub Actions is configured to install locked dependencies and run the complete release gate plus the production audit on pushes and pull requests; its remote execution is separate from the local results below. Asset sources and licenses are listed in [ASSETS.md](ASSETS.md).
+| Layer         | Implementation                                                          |
+| ------------- | ----------------------------------------------------------------------- |
+| Application   | Next.js 16 App Router, React 19, TypeScript 6                           |
+| Interface     | Plain CSS, Lucide icons, locally bundled fonts and images               |
+| Generative AI | Server-only Google Gemini REST integration                              |
+| Contracts     | Zod 4 request, response, and persisted-workspace schemas                |
+| Domain        | Pure TypeScript planning rules and immutable updates                    |
+| Persistence   | Validated browser `localStorage` with bounded collections               |
+| Rate limiting | In-memory during development; Upstash Redis REST for production live AI |
+| Testing       | Vitest, Testing Library, Playwright, and axe-core                       |
+| Delivery      | Vercel and Render configurations; GitHub Actions release workflow       |
 
 ## Verification
 
+The recorded local release gate on **21 October 2026** passed with the following results:
+
+| Check                                             | Recorded result                               |
+| ------------------------------------------------- | --------------------------------------------- |
+| Formatting, ESLint, and strict TypeScript         | Passed with zero lint warnings or type errors |
+| Unit, contract, component, and integration tests  | **149 passed across 19 Vitest files**         |
+| Chromium browser journeys                         | **12 passed**                                 |
+| Statement coverage                                | **99.74%**                                    |
+| Line and function coverage                        | **100%**                                      |
+| Branch coverage                                   | **98.47%**                                    |
+| Architecture and production asset budgets         | Passed                                        |
+| Serious or critical axe findings in tested states | **0**                                         |
+| Production dependency audit                       | **0 known vulnerabilities**                   |
+
+Coverage measures domain rules, application services, infrastructure, client adapters, and selected state hooks; it does not represent coverage of all UI markup. Browser checks cover the planning journey, approved suggestions, persistence failures, invalid responses, timeout/quota notices, keyboard use, mobile layout, and automated accessibility scans.
+
+Live Gemini generation was also verified locally with `gemini-3.1-flash-lite`: the browser displayed the Gemini badge and the API returned `"source": "gemini"`. Public hosting, production Upstash connectivity, and manual assistive-technology review require separate verification. These results do not establish a hackathon score or guarantee future response times.
+
+To repeat the automated checks on macOS or Linux, stop any server using port 3000, then run:
+
 ```bash
-npm run verify:full
+npx playwright install chromium
+GEMINI_API_KEY= APP_ORIGIN= npm run verify:full
 npm run audit:prod
 ```
 
-The latest local regression gate on **21 October 2026** passed with Node.js `v26.12.0`: **149 Vitest tests in 19 files**, **12 browser tests**, zero lint/type errors, zero serious/critical axe findings in the tested states, and a zero-advisory production dependency audit. Scoped logic coverage reached **99.74% statements, 100% lines/functions, and 98.47% branches**. The production build passed architecture checks across 70 source files and the bundle budgets.
+The empty assignments apply only to the verification command, preserving `.env.local` while keeping browser tests in demo mode. The GitHub Actions workflow runs the release gate and audit and retains reports; a remote workflow result is separate from the local evidence above.
 
-Live Gemini was also verified in local development on **21 October 2026** with `gemini-3.1-flash-lite`: the browser displayed **Personalized with Gemini**, the planning response returned HTTP 200 with `source: "gemini"`, and no CSP errors were observed in that browser journey. Exact test scope and measurements are recorded in [TESTING.md](TESTING.md), [PERFORMANCE.md](PERFORMANCE.md), and [JUDGING.md](JUDGING.md). These results do not establish a hackathon score. Shared production rate limiting, a deployed preview, and manual assistive-technology review still require their own verification.
+## Local setup
 
-Generation uses a 25-second provider deadline and a 35-second browser deadline, with specific fallback notices for timeouts and other known failures. One successful browser request took approximately 12.1 seconds, longer than the former nine-second limit; this illustrates why individual responses need deadline headroom. It is not a latency guarantee. [Explain.md](Explain.md) covers refreshing the page, generating a new preview, and interpreting the configured indicator.
+### Prerequisites
 
-## Project documentation
+- **Node.js 24** is selected by `.nvmrc`; the package requires Node.js 22 or newer.
+- **npm** and the checked-in `package-lock.json`.
+- A **Gemini API key** for live personalization. Demo mode requires no external credentials.
 
-| Document                             | Purpose                                                                     |
-| ------------------------------------ | --------------------------------------------------------------------------- |
-| [Setup.md](Setup.md)                 | Beginner-friendly local installation, Gemini configuration, troubleshooting |
-| [Explain.md](Explain.md)             | Live Gemini setup, model access, environment variables, and Redis explained |
-| [Deploy.md](Deploy.md)               | Vercel and Render settings and deployment smoke checks                      |
-| [JUDGING.md](JUDGING.md)             | Problem-to-evidence matrix and judge walkthrough                            |
-| [TESTING.md](TESTING.md)             | Test layers, coverage scope, and verification status                        |
-| [PERFORMANCE.md](PERFORMANCE.md)     | Bundle budgets, measurement method, and complexity                          |
-| [SECURITY.md](SECURITY.md)           | Threat model, input limits, secrets, and production AI behavior             |
-| [ACCESSIBILITY.md](ACCESSIBILITY.md) | Interface decisions and manual review checklist                             |
-| [RUNBOOK.md](RUNBOOK.md)             | Operational checks, failure behavior, and recovery                          |
+### Install and configure
 
-## Release scope
+From the project root:
 
-Workspace data stays in the current browser. Clearing site storage removes it; another browser or device will have its own workspace. This release does not provide accounts, multi-user synchronization, guest messaging, real vendor search, payments, or booking. An initial offline page load is not supported; fallback planning works after the application has loaded.
+```bash
+npm ci
+```
 
-No license grant has been selected for this repository. Do not assume that the absence of a license grants reuse or redistribution rights.
+Create the local environment file only if it does not already exist:
+
+```bash
+if [ ! -f .env.local ]; then
+  cp .env.example .env.local
+fi
+```
+
+Preserve existing credentials. For the port-3001 workflow below, set these values in `.env.local`:
+
+```dotenv
+GEMINI_MODEL=gemini-3.1-flash-lite
+APP_ORIGIN=http://localhost:3001
+```
+
+For live AI, fill in `GEMINI_API_KEY` with your private key. Leave it empty for demo mode. The two Redis fields can remain empty during development.
+
+```bash
+npm run dev -- --port 3001
+```
+
+Open **[http://localhost:3001](http://localhost:3001)**. Keep one development server per checkout; stop the existing instance with **Ctrl+C** before restarting. If you choose a different port, update both the command and `APP_ORIGIN` to match it exactly.
+
+Generate a new preview to test AI. Previously saved demo events do not regenerate automatically. Restart after changing environment settings.
+
+### Environment variables
+
+| Variable                   | Purpose                                                                                 | Required                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `GEMINI_API_KEY`           | Private server credential for Google Gemini                                             | Live AI                                                         |
+| `GEMINI_MODEL`             | Model identifier; defaults to `gemini-3.1-flash-lite`                                   | Optional override                                               |
+| `APP_ORIGIN`               | Exact browser origin, including scheme and local port, without a path or trailing slash | Explicitly set for local setup; required for production live AI |
+| `UPSTASH_REDIS_REST_URL`   | HTTPS REST endpoint for the shared limiter                                              | Production live AI                                              |
+| `UPSTASH_REDIS_REST_TOKEN` | Private write-capable token for the same Redis database                                 | Production live AI                                              |
+
+Keep real values in `.env.local` or private hosting settings. Never commit credentials or prefix them with `NEXT_PUBLIC_`. `APP_ORIGIN` authorizes the browser address; it does not choose the server's listening port.
+
+## Deployment
+
+Deploy the full Next.js application so its interface and API routes run together.
+
+| Setting         | Vercel                 | Render                        |
+| --------------- | ---------------------- | ----------------------------- |
+| Service         | Next.js project        | Node web service              |
+| Node.js         | 24.x                   | `NODE_VERSION=24`             |
+| Install         | `npm ci`               | Included in the build command |
+| Build           | `npm run build`        | `npm ci && npm run build`     |
+| Start           | Managed by Vercel      | `npm start`                   |
+| Output / health | Default Next.js output | Health path: `/api/health`    |
+
+1. Import the source repository into your chosen host. Keep `.env.local` excluded from Git.
+2. If the final public address is not known yet, deploy once with `GEMINI_API_KEY` unset to obtain it in demo mode.
+3. Create an Upstash Redis database and copy its **HTTPS REST URL** and **Standard writable REST token**. A read-only token or `redis://` connection string is unsuitable for this limiter.
+4. Add the application environment values in the hosting dashboard. Use the working Gemini key/model and set `APP_ORIGIN` to the exact public HTTPS origin you will open.
+5. Redeploy after saving the values. Vercel Preview and Production settings are separate; each tested hostname must match its configured origin.
+6. On the public site, generate a fresh preview and confirm both the Gemini badge and `"source": "gemini"`. Then save, edit, reload, and export an event.
+
+In production, the key, explicit origin, and working shared limiter are required before Gemini is called. The current application limit is **20 planning requests per 60-second window globally** across instances using the same Redis database, separate from Google's quotas. Redis stores the counter, not event plans.
+
+Retain the configured 45-second function allowance on Vercel. On Render, let the platform supply `PORT`; the existing start command binds to `0.0.0.0` and uses that port. Hosting startup delays and provider availability can differ from localhost.
+
+## Source layout
+
+```text
+src/
+├── app/              # Pages, layout, error states, and API routes
+├── application/      # Planning orchestration and narrative enrichment
+├── domain/           # Contracts, templates, calculations, and updates
+├── infrastructure/   # Server configuration, Gemini, HTTP, and rate limiting
+├── client/           # Browser requests, persistence, store, and export
+├── components/       # Workspace views, dialogs, assistant, and state hooks
+└── styles/           # Shared and feature-owned CSS
+tests/
+├── domain/           # Planning rules, contracts, and workspace behavior
+├── server/           # API, provider, configuration, and limiter contracts
+├── client/           # Persistence, export, and request recovery
+├── components/       # Interaction and state transitions
+└── e2e/              # Browser journeys, accessibility, and resilience
+scripts/              # Architecture, bundle, and browser measurements
+```
+
+## Current scope
+
+- Workspaces are browser-local, with up to 12 events. Changing the origin, device, or browser opens separate storage; there are no accounts or cloud synchronization.
+- Budget allocations are planning estimates. Vendor checklists do not provide live vendor search, quotations, messaging, payments, or booking.
+- Markdown export provides a readable copy; there is no import or automatic restore flow.
+- Fallback planning remains available after the app loads. An initial offline page load is not supported.
+- Gemini access depends on the configured project's model permissions, quota, connectivity, and response validity.
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+Copyright © 2026 Satyam Raj. Third-party dependencies and assets retain their respective licenses. The bundled Manrope font is distributed under the [SIL Open Font License](public/fonts/OFL.txt).
