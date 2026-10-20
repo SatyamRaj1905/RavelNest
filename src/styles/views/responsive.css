@@ -1,0 +1,153 @@
+@keyframes view-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1150px) {
+  .vendor-grid,
+  .ideas-grid,
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .budget-stat {
+    padding: 23px 20px;
+  }
+  .budget-stat-icon {
+    right: 17px;
+    top: 17px;
+    width: 30px;
+    height: 30px;
+  }
+  .budget-stat strong {
+    font-size: 26px;
+  }
+}
+@media (max-width: 700px) {
+  .view-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .view-heading h2 {
+    font-size: 29px;
+  }
+  .view-heading p {
+    font-size: 12px;
+  }
+  .budget-stat-grid {
+    gap: 10px;
+  }
+  .budget-stat {
+    padding: 20px 13px;
+  }
+  .budget-stat-icon {
+    position: static;
+    width: 29px;
+    height: 29px;
+    margin-bottom: 14px;
+  }
+  .budget-stat p {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+  .budget-stat strong {
+    font-size: 21px;
+  }
+  .budget-progress-panel {
+    padding: 20px;
+  }
+  .budget-progress-panel > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .view-panel-heading {
+    padding: 20px;
+  }
+  .budget-table th,
+  .budget-table td {
+    padding: 17px 18px;
+  }
+  .timeline-summary {
+    padding: 20px;
+    gap: 12px;
+  }
+  .timeline-summary-icon {
+    width: 35px;
+    height: 35px;
+  }
+  .timeline-summary h3 {
+    font-size: 12px;
+  }
+  .timeline-summary p {
+    font-size: 10px;
+  }
+  .timeline-summary > strong {
+    font-size: 27px;
+  }
+  .timeline-task {
+    padding: 19px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .timeline-task-content {
+    flex-basis: calc(100% - 40px);
+  }
+  .task-date {
+    justify-content: flex-start;
+    margin-left: 34px;
+  }
+  .vendor-toolbar {
+    flex-wrap: wrap;
+  }
+  .view-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .vendor-count {
+    margin-left: auto;
+  }
+  .view-filter {
+    padding: 10px 11px 12px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 480px) {
+  .vendor-grid,
+  .ideas-grid,
+  .events-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .budget-stat strong {
+    font-size: 18px;
+    letter-spacing: -0.4px;
+  }
+  .vendor-card,
+  .event-card {
+    padding: 22px;
+  }
+  .vendor-description,
+  .idea-content > p {
+    min-height: 0;
+  }
+  .idea-art {
+    height: 195px;
+  }
+  .event-create-card {
+    min-height: 250px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-view {
+    animation: none;
+  }
+  .budget-progress > span {
+    transition: none;
+  }
+}

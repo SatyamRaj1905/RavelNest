@@ -1,0 +1,130 @@
+.ideas-personalized {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  background: #edf2e4;
+  color: #5c684c;
+  font-size: 10px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid #e3ead7;
+}
+.ideas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.idea-card {
+  border: 1px solid #e5e8dd;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.idea-art {
+  display: grid;
+  place-items: center;
+  position: relative;
+  height: 185px;
+  overflow: hidden;
+  color: #fff7e4;
+  background: #b7be9d;
+}
+.idea-art > svg {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 3px 3px #56633415);
+}
+.idea-art-1 {
+  background: #dbb894;
+  color: #fff6e5;
+}
+.idea-art-2 {
+  background: #aabfc0;
+  color: #f1f5e8;
+}
+.idea-art-3 {
+  background: #cab3ac;
+  color: #fff5e6;
+}
+.idea-art-orbit {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border: 1px solid #ffffff50;
+  border-radius: 50%;
+  top: -18px;
+  right: -27px;
+}
+.idea-art-shape {
+  position: absolute;
+  bottom: -65px;
+  left: -25px;
+  width: 190px;
+  height: 160px;
+  border-radius: 120px 120px 0 0;
+  background: #ffffff19;
+  transform: rotate(-23deg);
+}
+.idea-art-star {
+  position: absolute;
+  font-size: 33px;
+  font-weight: 100;
+  top: 30px;
+  left: 32px;
+  opacity: 0.7;
+}
+.idea-art-caption {
+  position: absolute;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  bottom: 19px;
+}
+.idea-content {
+  padding: 23px;
+}
+.idea-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  color: #5f6551;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.idea-content h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #485b3c;
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.35;
+  margin: 12px 0 11px;
+}
+.idea-content > p {
+  margin: 0 0 23px;
+  color: #5d6555;
+  font-size: 11px;
+  line-height: 1.8;
+  min-height: 79px;
+}
+.idea-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid #e3e9d9;
+  background: #f9fbf5;
+  color: #5c664f;
+  border-radius: 7px;
+  padding: 10px 8px;
+  font-size: 10px;
+}
+.idea-save:hover,
+.idea-save.is-saved {
+  background: #eaf0e0;
+  border-color: #dce5ce;
+  color: #566a3f;
+}

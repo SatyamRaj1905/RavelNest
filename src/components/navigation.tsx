@@ -140,6 +140,7 @@ export function Navigation({
       />
       <aside
         className={`sidebar ${mobileOpen ? 'open' : ''}`}
+        aria-label="Workspace navigation"
         inert={isMobile && !mobileOpen}
       >
         <Brand />

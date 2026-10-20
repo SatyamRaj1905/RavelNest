@@ -8,7 +8,7 @@
   --border: #e6e9e1;
   --radius: 15px;
   --danger: #a43c36;
-  --font-body: var(--font-manrope), Arial, sans-serif;
+  --focus-ring: #b47c4c;
   color-scheme: light;
 }
 * {
@@ -55,7 +55,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 3px solid #b47c4c;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 4px;
 }
 h1,
@@ -92,7 +92,7 @@ h1 {
 }
 h1 em {
   font-weight: 400;
-  color: #5e6b54;
+  color: var(--muted);
 }
 h2 {
   font-size: 16px;
@@ -189,7 +189,7 @@ p {
   font-size: 9px;
   letter-spacing: 1.8px;
   font-weight: 700;
-  color: #5e6b54;
+  color: var(--muted);
 }
 .online-dot {
   display: inline-block;
@@ -230,7 +230,7 @@ p {
 }
 .source-label {
   font-size: 9px;
-  color: #5e6b54;
+  color: var(--muted);
   padding: 3px 7px;
   border-radius: 4px;
   background: #f0f3e9;

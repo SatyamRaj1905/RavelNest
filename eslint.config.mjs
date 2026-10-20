@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import { qualityLimits } from './scripts/quality-policy.mjs';
 
 export default tseslint.config(
   {
@@ -27,18 +28,33 @@ export default tseslint.config(
   },
   {
     files: ['src/**/*.{ts,tsx}'],
+    extends: [tseslint.configs.recommendedTypeCheckedOnly],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     plugins: { 'react-hooks': reactHooks, 'jsx-a11y': jsxA11y },
     rules: {
       ...reactHooks.configs.recommended.rules,
       ...jsxA11y.configs.recommended.rules,
-      complexity: ['error', 10],
+      complexity: ['error', qualityLimits.complexity],
       'max-lines-per-function': [
         'error',
-        { max: 60, skipBlankLines: true, skipComments: true },
+        {
+          max: qualityLimits.functionLines,
+          skipBlankLines: true,
+          skipComments: true,
+        },
       ],
       'max-lines': [
         'error',
-        { max: 400, skipBlankLines: false, skipComments: false },
+        {
+          max: qualityLimits.fileLines,
+          skipBlankLines: false,
+          skipComments: false,
+        },
       ],
       'no-warning-comments': [
         'error',

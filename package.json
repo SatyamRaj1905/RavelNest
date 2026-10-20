@@ -16,9 +16,10 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:tooling": "node --test tests/tooling/*.test.mjs",
     "bundle:check": "node scripts/check-bundle-budget.mjs",
     "audit:prod": "npm audit --omit=dev",
-    "verify": "npm run format:check && npm run lint && npm run type-check && npm run test && npm run build",
+    "verify": "npm run format:check && npm run lint && npm run type-check && npm run test:tooling && npm run test && npm run build",
     "verify:full": "npm run verify && npm run test:e2e",
     "architecture:check": "node scripts/check-architecture.mjs",
     "browser:measure": "node scripts/measure-browser.mjs"

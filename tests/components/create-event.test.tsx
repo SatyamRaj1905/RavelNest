@@ -101,4 +101,29 @@ describe('approved event creation', () => {
       screen.getByRole('button', { name: 'Back to details' }),
     ).toBeInTheDocument();
   });
+
+  it('keeps the event draft and provides a retry after a generation error', async () => {
+    const onSave = vi.fn();
+    mockedRequest.mockRejectedValueOnce(new Error('Unexpected private detail'));
+    render(<CreateEventDialog onClose={vi.fn()} onSave={onSave} />);
+    const user = await fillBrief();
+    await user.click(screen.getByRole('button', { name: 'Generate plan' }));
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent(
+      'Your plan could not be prepared. Please try again.',
+    );
+    expect(alert).not.toHaveTextContent('Unexpected private detail');
+    expect(screen.getByLabelText('Event name')).toHaveValue(
+      'A festival for our neighborhood',
+    );
+    expect(screen.getByLabelText(/Your vision/)).toHaveValue(
+      'Accessible venue, local food, a plant exchange.',
+    );
+    expect(onSave).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: 'Generate plan' }));
+    expect(
+      await screen.findByRole('button', { name: 'Save event' }),
+    ).toBeEnabled();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

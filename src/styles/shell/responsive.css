@@ -1,0 +1,139 @@
+@media (min-width: 1550px) {
+  .main-content {
+    padding: 42px 48px 0;
+  }
+  .topbar {
+    padding: 0 48px;
+  }
+  .sidebar {
+    width: 245px;
+  }
+  .workspace {
+    margin-left: 245px;
+  }
+  .brand {
+    font-size: 33px;
+  }
+}
+@media (max-width: 1150px) {
+  .sidebar {
+    width: 195px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .brand {
+    font-size: 26px;
+  }
+  .workspace {
+    margin-left: 195px;
+  }
+  .main-content {
+    padding: 28px 24px 0;
+  }
+  .topbar {
+    padding: 0 24px;
+  }
+  .private-badge {
+    display: none;
+  }
+  .local-profile {
+    margin: 0 -15px;
+    padding: 18px 15px;
+  }
+  .page-heading h1 {
+    font-size: 31px;
+  }
+  .sidebar-note {
+    padding: 18px 13px;
+  }
+}
+@media (max-width: 850px) {
+  .sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.2s;
+    width: 225px;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .workspace {
+    margin-left: 0;
+  }
+  .menu-button {
+    display: inline-flex;
+  }
+  .topbar-left {
+    gap: 10px;
+  }
+  .mobile-close {
+    display: flex;
+    position: absolute;
+    right: 8px;
+    top: 3px;
+  }
+  .nav-scrim.visible {
+    display: block;
+    position: fixed;
+    z-index: 29;
+    inset: 0;
+    background: #17291c70;
+  }
+  .topbar {
+    height: 66px;
+  }
+  .topbar-sparkle {
+    display: none;
+  }
+  .sidebar-bottom {
+    padding-top: 25px;
+  }
+}
+@media (max-width: 600px) {
+  .main-content {
+    padding: 24px 17px 0;
+  }
+  .topbar {
+    padding: 0 13px;
+  }
+  .breadcrumb {
+    font-size: 9px;
+  }
+  .breadcrumb > span {
+    margin: 0 6px;
+  }
+  .event-select {
+    max-width: 170px;
+  }
+  .event-select select {
+    font-size: 9px;
+    padding-left: 8px;
+  }
+  .topbar-right {
+    gap: 5px;
+  }
+  .page-heading {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+    margin-bottom: 22px;
+  }
+  .page-heading h1 {
+    font-size: 31px;
+    max-width: 320px;
+  }
+  .page-heading .eyebrow {
+    font-size: 8px;
+  }
+  .page-heading > .button {
+    margin-top: 0;
+  }
+  .workspace-footer {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .workspace-footer > span:nth-child(2) {
+    display: none;
+  }
+}

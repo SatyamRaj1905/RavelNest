@@ -2,17 +2,14 @@ import 'server-only';
 import { planRequestSchema, type PlanRequest } from '../domain/contracts';
 import type { ServerConfig } from './config.server';
 import { PublicError, readBoundedJson } from './http.server';
+import { liveAiUnavailable } from './plan-errors.server';
 
 export async function validatePlanRequest(
   request: Request,
   config: ServerConfig,
 ): Promise<PlanRequest> {
   if (config.production && config.apiKey && !config.origin)
-    throw new PublicError(
-      'SERVICE_UNAVAILABLE',
-      'Live AI is temporarily unavailable. Use the local planning option.',
-      503,
-    );
+    throw liveAiUnavailable();
   const contentType = request.headers
     .get('content-type')
     ?.split(';')[0]

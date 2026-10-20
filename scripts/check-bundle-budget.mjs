@@ -1,22 +1,12 @@
-import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
-import path from 'node:path';
+import { walkFiles } from './lib/files.mjs';
 
 const limits = {
   js: { raw: 850_000, gzip: 260_000 },
   css: { raw: 50_000, gzip: 12_000 },
 };
-async function collect(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const nested = await Promise.all(
-    entries.map(async (entry) => {
-      const filename = path.join(directory, entry.name);
-      return entry.isDirectory() ? collect(filename) : [filename];
-    }),
-  );
-  return nested.flat();
-}
-const files = await collect('.next/static');
+const files = await walkFiles('.next/static');
 const measured = {};
 for (const [extension, budget] of Object.entries(limits)) {
   const contents = await Promise.all(

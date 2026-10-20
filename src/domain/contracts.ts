@@ -4,6 +4,18 @@ export const eventTypes = ['wedding', 'birthday', 'community'] as const;
 export const currencies = ['INR', 'USD', 'EUR', 'GBP'] as const;
 export const vendorStatuses = ['to-contact', 'contacted', 'booked'] as const;
 export const MAX_EVENTS = 12;
+export const EVENT_LIMITS = {
+  nameLength: 100,
+  locationLength: 120,
+  directionLength: 1200,
+  minGuests: 1,
+  maxGuests: 10000,
+  minBudget: 100,
+  maxBudget: 100000000,
+  minDate: '1900-01-01',
+  maxDate: '2199-12-31',
+  maxSpent: 1000000000,
+} as const;
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 const calendarDate = z
@@ -19,17 +31,25 @@ const calendarDate = z
 
 export const briefSchema = z
   .object({
-    name: text(100),
+    name: text(EVENT_LIMITS.nameLength),
     type: z.enum(eventTypes),
     date: calendarDate.refine(
-      (value) => value >= '1900-01-01' && value <= '2199-12-31',
+      (value) => value >= EVENT_LIMITS.minDate && value <= EVENT_LIMITS.maxDate,
       'Choose an event date from 1900 through 2199.',
     ),
-    guests: z.number().int().min(1).max(10000),
-    budget: z.number().int().min(100).max(100000000),
+    guests: z
+      .number()
+      .int()
+      .min(EVENT_LIMITS.minGuests)
+      .max(EVENT_LIMITS.maxGuests),
+    budget: z
+      .number()
+      .int()
+      .min(EVENT_LIMITS.minBudget)
+      .max(EVENT_LIMITS.maxBudget),
     currency: z.enum(currencies),
-    location: text(120),
-    preferences: z.string().trim().max(1200),
+    location: text(EVENT_LIMITS.locationLength),
+    preferences: z.string().trim().max(EVENT_LIMITS.directionLength),
   })
   .strict();
 
@@ -37,7 +57,7 @@ export const budgetItemSchema = z
   .object({
     category: text(80),
     amount: z.number().int().nonnegative(),
-    spent: z.number().int().min(0).max(1000000000),
+    spent: z.number().int().min(0).max(EVENT_LIMITS.maxSpent),
   })
   .strict();
 
@@ -76,6 +96,14 @@ const uniqueIds = (items: { id: string }[]) =>
 const uniqueCategories = (items: { category: string }[]) =>
   new Set(items.map((item) => item.category)).size === items.length;
 
+const BUDGET_MISMATCH = 'Allocations must match the event budget.';
+const MILESTONE_MISMATCH = 'Milestones cannot fall after the event date.';
+type PlanContext = { brief: EventBrief; plan: EventPlan };
+const matchesBudget = ({ brief, plan }: PlanContext) =>
+  plan.budget.reduce((total, item) => total + item.amount, 0) === brief.budget;
+const matchesMilestones = ({ brief, plan }: PlanContext) =>
+  plan.tasks.every((task) => task.dueDate <= brief.date);
+
 export const planSchema = z
   .object({
     summary: text(1800),
@@ -111,17 +139,8 @@ export const eventSchema = z
     createdAt: z.iso.datetime(),
   })
   .strict()
-  .refine(
-    (event) =>
-      event.plan.budget.reduce((total, item) => total + item.amount, 0) ===
-      event.brief.budget,
-    'Allocations must match the event budget.',
-  )
-  .refine(
-    (event) =>
-      event.plan.tasks.every((task) => task.dueDate <= event.brief.date),
-    'Milestones cannot fall after the event date.',
-  );
+  .refine(matchesBudget, BUDGET_MISMATCH)
+  .refine(matchesMilestones, MILESTONE_MISMATCH);
 
 export const workspaceSchema = z
   .object({
@@ -140,7 +159,7 @@ export const workspaceSchema = z
 export const planRequestSchema = z
   .object({
     brief: briefSchema,
-    prompt: z.string().trim().max(1200).optional(),
+    prompt: z.string().trim().max(EVENT_LIMITS.directionLength).optional(),
   })
   .strict();
 export const planResponseSchema = z
@@ -166,3 +185,15 @@ export type EventRecord = z.infer<typeof eventSchema>;
 export type Workspace = z.infer<typeof workspaceSchema>;
 export type PlanRequest = z.infer<typeof planRequestSchema>;
 export type PlanResponse = z.infer<typeof planResponseSchema>;
+
+/** Validate the response against its request without inventing a saved event identity. */
+export function parsePlanResponseForBrief(
+  input: unknown,
+  brief: EventBrief,
+): PlanResponse {
+  const response = planResponseSchema.parse(input);
+  const context = { brief: briefSchema.parse(brief), plan: response.plan };
+  if (!matchesBudget(context)) throw new Error(BUDGET_MISMATCH);
+  if (!matchesMilestones(context)) throw new Error(MILESTONE_MISMATCH);
+  return response;
+}

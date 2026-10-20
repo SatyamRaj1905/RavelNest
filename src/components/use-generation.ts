@@ -5,6 +5,7 @@ import { requestPlan } from '@/client/request-plan';
 type Generation =
   | { status: 'idle' }
   | { status: 'loading' }
+  | { status: 'error'; message: string }
   | { status: 'ready'; result: PlanResponse; brief: EventBrief };
 
 export function useGeneration() {
@@ -25,7 +26,11 @@ export function useGeneration() {
       const result = await requestPlan(brief, prompt, request.signal);
       if (!request.signal.aborted) setState({ status: 'ready', result, brief });
     } catch {
-      if (!request.signal.aborted) setState({ status: 'idle' });
+      if (!request.signal.aborted)
+        setState({
+          status: 'error',
+          message: 'Your plan could not be prepared. Please try again.',
+        });
     }
   }
   function reset() {

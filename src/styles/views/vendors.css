@@ -1,0 +1,159 @@
+.vendor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 23px;
+}
+.view-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e1e6d9;
+  border-radius: 8px;
+  padding: 0 13px;
+  background: #fff;
+  color: #5f6558;
+  min-width: 0;
+  flex: 1;
+  max-width: 400px;
+}
+.view-search input {
+  border: 0;
+  background: transparent;
+  color: #52614a;
+  outline-offset: -2px;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 12px;
+  min-width: 0;
+}
+.view-search input::placeholder {
+  color: #61655c;
+}
+.vendor-toolbar > select,
+.vendor-card select {
+  border: 1px solid #e3e8dc;
+  border-radius: 7px;
+  color: #5c6853;
+  font: inherit;
+  background: #fff;
+  font-size: 11px;
+  padding: 11px 12px;
+}
+.vendor-count {
+  margin-left: auto;
+  font-size: 10px;
+  white-space: nowrap;
+  color: #5f6656;
+}
+.vendor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.vendor-card {
+  border: 1px solid #e3e8db;
+  border-radius: 12px;
+  background: #fff;
+  padding: 23px;
+}
+.vendor-card > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.vendor-icon {
+  display: grid;
+  place-items: center;
+  width: 41px;
+  height: 41px;
+  background: #edf1e6;
+  color: #5a694d;
+  border-radius: 10px;
+}
+.vendor-card:nth-child(3n + 2) .vendor-icon {
+  color: #7e5e45;
+  background: #f7eee2;
+}
+.vendor-card:nth-child(3n) .vendor-icon {
+  color: #536668;
+  background: #eaf2ef;
+}
+.vendor-status {
+  text-transform: capitalize;
+  font-size: 9px;
+  border-radius: 5px;
+  padding: 5px 7px;
+  color: #71604e;
+  background: #f7f1e8;
+  border: 1px solid #f0e8da;
+}
+.vendor-status.status-contacted {
+  color: #5a6674;
+  background: #eef2f6;
+  border-color: #e2e8ef;
+}
+.vendor-status.status-booked {
+  color: #556942;
+  background: #edf3e7;
+  border-color: #e1e9d9;
+}
+.vendor-card > h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #485c3c;
+  margin: 0 0 11px;
+}
+.vendor-description {
+  color: #616758;
+  font-size: 11px;
+  line-height: 1.8;
+  margin: 0 0 22px;
+  min-height: 59px;
+}
+.vendor-status-label,
+.vendor-notes-form > label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 9px;
+  color: #616758;
+  margin: 0 0 8px;
+}
+.vendor-card select {
+  width: 100%;
+  background: #fafbf8;
+}
+.vendor-notes-form {
+  margin-top: 20px;
+}
+.vendor-notes-form textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #e5eadd;
+  border-radius: 7px;
+  background: #fafbf8;
+  color: #5d6850;
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.8;
+  padding: 10px;
+}
+.vendor-notes-form textarea::placeholder {
+  color: #61665b;
+}
+.vendor-notes-form > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+.vendor-save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #546a41;
+  font-size: 9px;
+}

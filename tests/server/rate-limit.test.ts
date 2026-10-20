@@ -55,6 +55,22 @@ describe('bounded local rate limits', () => {
 });
 
 describe('fail-closed production live limiter', () => {
+  it('discards failed provider bodies while keeping safe public errors if cleanup fails', async () => {
+    const cancel = vi.fn().mockRejectedValue(new Error('Private redis detail'));
+    const response = new Response(new ReadableStream({ cancel }), {
+      status: 503,
+    });
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(response);
+    await expect(
+      enforceRateLimit(production, request(), fetcher),
+    ).rejects.toMatchObject({
+      code: 'SERVICE_UNAVAILABLE',
+      status: 503,
+      message:
+        'Live AI is temporarily unavailable. Use the local planning option.',
+    });
+    expect(cancel).toHaveBeenCalledOnce();
+  });
   it('uses atomic expiry plus global budget protection independent of spoofed IP', async () => {
     const fetcher = vi
       .fn<typeof fetch>()

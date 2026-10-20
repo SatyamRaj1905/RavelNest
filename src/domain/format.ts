@@ -18,6 +18,14 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
 });
 const DAY_MS = 86400000;
 
+/** HTML date inputs need the user's calendar day, which can differ from UTC. */
+export function localCalendarDate(date: Date = new Date()): string {
+  const year = String(date.getFullYear()).padStart(4, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function formatMoney(amount: number, currency: Currency): string {
   return moneyFormatters.get(currency)?.format(amount) ?? String(amount);
 }

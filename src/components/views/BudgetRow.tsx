@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
 import {
   budgetItemSchema,
+  EVENT_LIMITS,
   type EventPlan,
   type EventRecord,
 } from '@/domain/contracts';
@@ -30,7 +31,9 @@ export function BudgetRow({ item, currency, onSave }: BudgetRowProps) {
     event.preventDefault();
     const amount = Number(value);
     if (!validSpending(value, amount)) {
-      setError('Enter a whole amount from 0 to 1,000,000,000.');
+      setError(
+        `Enter a whole amount from 0 to ${EVENT_LIMITS.maxSpent.toLocaleString('en-US')}.`,
+      );
       return;
     }
     setError('');

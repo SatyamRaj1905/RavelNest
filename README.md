@@ -101,7 +101,8 @@ Applying assistant suggestions preserves recorded spending, completed tasks, ven
 
 - **Canonical domain rules:** allocations, dates, updates, identifiers, and fallback behavior have shared owners instead of separate UI and server implementations.
 - **Strict boundaries:** TypeScript, runtime schemas, server-only adapters, and automated dependency checks keep application layers separate.
-- **Maintainability limits:** production linting enforces complexity 10, 60 lines per function excluding comments and blank lines, 400 lines per file, and zero warnings.
+- **Maintainability limits:** typed production linting enforces complexity 10, 60 lines per function excluding comments and blank lines, and zero warnings. A shared policy limits TypeScript and CSS files to 400 lines.
+- **Syntax-aware architecture checks:** real static/type/dynamic imports, missing targets, dependency cycles, and runtime client/server leaks are checked before production compilation.
 - **Measured asset limits:** production builds check raw and gzip budgets for emitted JavaScript and CSS.
 - **Resilient interaction:** cancellable generation, stale-response protection, preserved drafts, and browser-storage recovery support the planning journey.
 - **Accessible interaction:** semantic controls, keyboard navigation, dialog focus handling, visible focus, reduced-motion styles, and responsive layouts are covered by component and browser checks.
@@ -125,17 +126,18 @@ Applying assistant suggestions preserves recorded spending, completed tasks, ven
 
 The recorded local release gate on **21 October 2026** passed with the following results:
 
-| Check                                             | Recorded result                               |
-| ------------------------------------------------- | --------------------------------------------- |
-| Formatting, ESLint, and strict TypeScript         | Passed with zero lint warnings or type errors |
-| Unit, contract, component, and integration tests  | **149 passed across 19 Vitest files**         |
-| Chromium browser journeys                         | **12 passed**                                 |
-| Statement coverage                                | **99.74%**                                    |
-| Line and function coverage                        | **100%**                                      |
-| Branch coverage                                   | **98.47%**                                    |
-| Architecture and production asset budgets         | Passed                                        |
-| Serious or critical axe findings in tested states | **0**                                         |
-| Production dependency audit                       | **0 known vulnerabilities**                   |
+| Check                                               | Recorded result                               |
+| --------------------------------------------------- | --------------------------------------------- |
+| Formatting, ESLint, and strict TypeScript           | Passed with zero lint warnings or type errors |
+| Unit, contract, component, and integration tests    | **165 passed across 22 Vitest files**         |
+| Architecture/tooling tests                          | **37 passed across 3 Node test files**        |
+| Chromium browser journeys                           | **13 passed**                                 |
+| Statement coverage                                  | **99.52%**                                    |
+| Line and function coverage                          | **100%**                                      |
+| Branch coverage                                     | **98.09%**                                    |
+| Architecture and production asset budgets           | Passed                                        |
+| Axe findings across all severities in tested states | **0**                                         |
+| Production dependency audit                         | **0 known vulnerabilities**                   |
 
 Coverage measures domain rules, application services, infrastructure, client adapters, and selected state hooks; it does not represent coverage of all UI markup. Browser checks cover the planning journey, approved suggestions, persistence failures, invalid responses, timeout/quota notices, keyboard use, mobile layout, and automated accessibility scans.
 
@@ -244,6 +246,7 @@ tests/
 ├── server/           # API, provider, configuration, and limiter contracts
 ├── client/           # Persistence, export, and request recovery
 ├── components/       # Interaction and state transitions
+├── tooling/          # Architecture-policy failure and boundary cases
 └── e2e/              # Browser journeys, accessibility, and resilience
 scripts/              # Architecture, bundle, and browser measurements
 ```

@@ -25,5 +25,6 @@ jobs:
           path: |
             coverage/coverage-summary.json
             artifacts/bundle.json
+            artifacts/quality.json
             playwright-report/
           retention-days: 14

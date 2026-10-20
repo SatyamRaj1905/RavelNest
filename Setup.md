@@ -31,7 +31,7 @@ If the project is already on your desktop:
 cd ~/Desktop/RavelNest
 ```
 
-Otherwise, download or clone your own copy and open its root folder. The root contains `package.json` and `FIRST_ATTEMPT_98_PLAYBOOK.md`.
+Otherwise, download or clone your own copy and open its root folder. The root contains `package.json` and `.env.example`.
 
 ## 3. Install the exact locked dependencies
 
@@ -80,7 +80,7 @@ Check [http://localhost:3000/api/health](http://localhost:3000/api/health) to se
 
 Only the validated event brief and bounded planning request are sent to Gemini. Do not put confidential guest details into a planning prompt. Model output is validated and restricted to narrative fields; allocation math and operational state remain deterministic. [Google structured-output guidance](https://ai.google.dev/gemini-api/docs/generate-content/structured-output).
 
-Local development uses a bounded in-process limiter. Public production live AI requires `APP_ORIGIN` and both Upstash variables; see [Deploy.md](Deploy.md). Upstash is optional infrastructure for protecting public AI usage, not an event database.
+Local development uses a bounded in-process limiter. Public production live AI requires `APP_ORIGIN` and both Upstash variables; see the [deployment instructions](README.md#deployment). Upstash is optional infrastructure for protecting public AI usage, not an event database.
 
 ## 7. Run the checks
 

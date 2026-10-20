@@ -29,6 +29,10 @@ Rate limits reduce casual abuse; this release has no authenticated identity, per
 
 External request bodies, persisted browser state, and provider responses are unknown until parsed with their runtime schemas. Request contracts reject unknown fields. The route validates origin and content type and bounds the body before application logic. Provider or parsing errors return stable safe public messages; internal stacks and raw provider errors are not rendered.
 
+Form constraints and domain mutations share `EVENT_LIMITS`. The browser validates a response against its original brief through `parsePlanResponseForBrief`, using the same exact-budget and milestone predicates as saved events. Narrative schemas derive their text constraints from the canonical plan and idea schemas; enrichment cannot insert a new idea identity or saved flag.
+
+Oversized and unsuccessful provider responses are discarded. Cleanup failures cannot hide the original safe quota or service error. Type-aware ESLint checks unsafe values and promises; the AST architecture check rejects client paths into server-only code, including paths through re-exports and literal dynamic imports. These checks supplement runtime controls.
+
 User preferences are untrusted data rather than system instructions. Generated output is limited to validated narrative fields. It cannot replace authoritative allocation math, dates, completion flags, or vendor statuses, and it is rendered as text rather than arbitrary HTML. [Google's structured-output guidance](https://ai.google.dev/gemini-api/docs/generate-content/structured-output) also calls for application-level semantic validation.
 
 ## Concrete resource limits
@@ -69,10 +73,10 @@ On **20 October 2026**, the local production smoke returned status 200 for `/` a
 
 On 21 October, live Gemini was verified in local development: a real Chromium generation returned HTTP 200 with `source: "gemini"`, displayed **Personalized with Gemini**, and had no observed CSP errors. A separate application API response also passed the runtime schema. This does not verify production shared limiting, hosted TLS/headers, or public deployment behavior; those remain unverified.
 
-After the timing/failure update, the final regression passed 149 Vitest tests in 19 files and twelve Chromium tests, including classified timeout/quota display and configuration-only health assertions. The production dependency audit still reported zero known vulnerabilities and the credential-pattern scan found no matches in source, tests, generated static assets, or documentation. Fresh local live generation succeeded with the unchanged key; no quota/authentication cause is inferred from the earlier slow requests.
+The latest 21 October code-quality regression passed 165 Vitest tests in 22 files, 37 independent Node tooling tests and thirteen Chromium journeys. The production dependency audit reported zero known vulnerabilities; a credential-pattern scan passed across source, tests, scripts and generated static assets. Tests cover rejected-stream cleanup preserving original error classification, strict response validation and configuration-only health checks. Local browser tests run in a fresh keyless production process, without using `.env.local` credentials or making live-provider verification claims.
 
 ## Data and unsupported controls
 
 Event plans persist in the current browser's storage. They are not an encrypted vault, cloud backup, or shared database. Clearing storage removes them. Event briefs are sent to Gemini only when live enrichment is configured and requested; model/provider processing is subject to that service's terms. The application does not collect guest contact lists.
 
-Accounts, authorization roles, multi-device sync, audit trails, encrypted exports, payment processing, real vendor verification, and regulatory compliance certification are outside this release. Review [Deploy.md](Deploy.md) before enabling public live AI.
+Accounts, authorization roles, multi-device sync, audit trails, encrypted exports, payment processing, real vendor verification, and regulatory compliance certification are outside this release. Review production configuration in [README.md](README.md) and smoke checks in [RUNBOOK.md](RUNBOOK.md) before enabling public live AI.

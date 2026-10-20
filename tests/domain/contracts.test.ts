@@ -5,6 +5,7 @@ import {
   eventSchema,
   planRequestSchema,
   planResponseSchema,
+  parsePlanResponseForBrief,
   planSchema,
   workspaceSchema,
 } from '../../src/domain/contracts';
@@ -132,5 +133,37 @@ describe('strict runtime contracts', () => {
         budget: [{ ...item, spent: 1.25 }],
       }).success,
     ).toBe(false);
+  });
+});
+
+describe('response validation against the original brief', () => {
+  const response = { plan: event.plan, source: 'gemini', notice: 'Ready.' };
+
+  it('accepts a validated response without a generated identity or timestamp', () => {
+    expect(parsePlanResponseForBrief(response, event.brief)).toEqual(response);
+  });
+
+  it('rejects wrong totals and late milestones using saved-event invariants', () => {
+    expect(() =>
+      parsePlanResponseForBrief(response, { ...event.brief, budget: 100 }),
+    ).toThrow('Allocations must match');
+    expect(() =>
+      parsePlanResponseForBrief(response, {
+        ...event.brief,
+        date: '1900-01-01',
+      }),
+    ).toThrow('Milestones cannot fall after');
+  });
+
+  it('keeps strict response and brief validation at the public boundary', () => {
+    expect(() =>
+      parsePlanResponseForBrief(
+        { ...response, key: 'unexpected' },
+        event.brief,
+      ),
+    ).toThrow();
+    expect(() =>
+      parsePlanResponseForBrief(response, { ...event.brief, guests: 0 }),
+    ).toThrow();
   });
 });

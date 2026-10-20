@@ -2,9 +2,24 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { createPreview, navigateTo } from './helpers';
 
-async function expectNoSeriousViolations(
-  page: Parameters<typeof navigateTo>[0],
-) {
+test('workspace uses the bundled body font after stylesheet composition', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+  const typography = await page.evaluate(() => {
+    const style = getComputedStyle(document.body);
+    const family = style.getPropertyValue('--font-manrope').split(',')[0];
+    return {
+      expected: family?.replaceAll('"', '').trim() ?? '',
+      actual: style.fontFamily.replaceAll('"', ''),
+    };
+  });
+  expect(typography.expected).not.toBe('');
+  expect(typography.actual).toContain(typography.expected);
+});
+
+async function expectNoViolations(page: Parameters<typeof navigateTo>[0]) {
   await page.evaluate(() =>
     Promise.all(
       document
@@ -17,19 +32,17 @@ async function expectNoSeriousViolations(
   );
   const result = await new AxeBuilder({ page }).analyze();
   expect(
-    result.violations
-      .filter((item) => item.impact === 'serious' || item.impact === 'critical')
-      .map((item) => ({
-        id: item.id,
-        nodes: item.nodes.map((node) => ({
-          target: node.target,
-          reason: node.failureSummary,
-        })),
+    result.violations.map((item) => ({
+      id: item.id,
+      nodes: item.nodes.map((node) => ({
+        target: node.target,
+        reason: node.failureSummary,
       })),
+    })),
   ).toEqual([]);
 }
 
-test('primary workspace views and event dialog have no serious or critical axe violations', async ({
+test('primary workspace views and event dialog have no axe violations', async ({
   page,
 }) => {
   await page.goto('/');
@@ -42,7 +55,7 @@ test('primary workspace views and event dialog have no serious or critical axe v
     'Inspiration',
   ]) {
     await navigateTo(page, name);
-    await expectNoSeriousViolations(page);
+    await expectNoViolations(page);
   }
   await page
     .getByRole('button', { name: 'Create event', exact: true })
@@ -50,7 +63,7 @@ test('primary workspace views and event dialog have no serious or critical axe v
     .first()
     .click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await expectNoSeriousViolations(page);
+  await expectNoViolations(page);
 });
 
 test('keyboard opens a native dialog, contains focus, and returns focus on Escape', async ({
@@ -97,7 +110,7 @@ test('mobile host can create a plan and navigate without page overflow', async (
     .click();
   const dialog = await createPreview(page, 'A mobile community of friends');
   await expect(dialog).toBeVisible();
-  await expectNoSeriousViolations(page);
+  await expectNoViolations(page);
   await dialog.getByRole('button', { name: 'Save event', exact: true }).click();
   for (const name of [
     'Budget',
@@ -113,5 +126,5 @@ test('mobile host can create a plan and navigate without page overflow', async (
       ),
     ).toBe(true);
   }
-  await expectNoSeriousViolations(page);
+  await expectNoViolations(page);
 });

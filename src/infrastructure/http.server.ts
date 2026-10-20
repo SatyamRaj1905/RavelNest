@@ -11,16 +11,23 @@ export class PublicError extends Error {
   }
 }
 
+/** Cleanup must not replace the original public failure when a stream rejects cancellation. */
+export async function discardBody(message: Request | Response): Promise<void> {
+  await message.body?.cancel().catch(() => undefined);
+}
+
 export async function readBoundedJson(
   message: Request | Response,
   maxBytes: number,
 ): Promise<unknown> {
-  if (Number(message.headers.get('content-length')) > maxBytes)
+  if (Number(message.headers.get('content-length')) > maxBytes) {
+    await discardBody(message);
     throw new PublicError(
       'PAYLOAD_TOO_LARGE',
       'The request is too large.',
       413,
     );
+  }
   const reader = message.body?.getReader();
   if (!reader)
     throw new PublicError('INVALID_JSON', 'Send a valid JSON request.', 400);
@@ -40,7 +47,8 @@ export async function readBoundedJson(
         );
       text += decoder.decode(value, { stream: true });
     }
-    return JSON.parse(text + decoder.decode()) as unknown;
+    const parsed: unknown = JSON.parse(text + decoder.decode());
+    return parsed;
   } catch (error) {
     await reader.cancel().catch(() => undefined);
     if (error instanceof PublicError) throw error;

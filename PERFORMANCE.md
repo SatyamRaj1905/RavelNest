@@ -17,14 +17,33 @@ Measured in the latest regression build on **21 October 2026**, Node.js `v26.12.
 
 | Scope                             |    Raw JS |   Gzip JS |  Raw CSS | Gzip CSS | Status                      |
 | --------------------------------- | --------: | --------: | -------: | -------: | --------------------------- |
-| All emitted `.next/static` assets | 775,048 B | 238,871 B | 41,590 B |  9,319 B | Passed                      |
+| All emitted `.next/static` assets | 775,486 B | 239,062 B | 41,856 B |  9,389 B | Passed                      |
 | Enforced maximum                  | 850,000 B | 260,000 B | 50,000 B | 12,000 B | Build fails above any limit |
 
-The emitted set contains 14 JavaScript files and one CSS file. The first measured build contained 771,741 raw JavaScript bytes; the 3,307-byte raw increase incorporates approval/source preservation, dialog focus handling, retained form drafts, and date-boundary correctness. The latest raw JavaScript/CSS totals match the 20 October final build, and all limits remain unchanged. Gzip sizes differ from the earlier Node.js `v24.16.0` run; this is not a comparison under identical tooling, so the compressed-byte difference is not attributed solely to code changes.
+The emitted set contains 14 JavaScript files and one CSS file. Before the code-quality refactor, the same Node.js version produced 775,048 raw / 238,871 gzip JavaScript bytes and 41,590 raw / 9,319 gzip CSS bytes. The refactor adds 438 raw JavaScript bytes and 266 raw CSS bytes for shared validation, explicit error handling, accessible landmark names, and reusable color tokens. All existing ceilings remain unchanged, and no dependency was added. Comparisons with older Node.js `v24.16.0` gzip measurements use different tooling and should not be attributed solely to code changes.
 
 The studio at `/` is the primary interactive route. `/api/health` and `/api/plan` are server endpoints. Refresh this table from the final gate and inspect the budget script for authoritative limits. Initial route requests and Core Web Vitals remain separate browser measurements.
 
-The final 21 October reliability regression retained these exact asset totals and existing limits after adding the 25-second provider / 35-second browser deadline policy and classified fallback behavior. Architecture checks passed across 70 source files, with 149 Vitest tests in 19 files and twelve browser tests passing. Detailed scope remains in [TESTING.md](TESTING.md).
+The final 21 October release gate passed across 71 TypeScript/TSX files and 21 CSS files, with 165 Vitest tests in 22 files, 37 architecture-tooling tests in three files, and 13 browser tests. The existing 25-second provider / 35-second browser deadline policy and classified fallback behavior are preserved. Detailed scope remains in [TESTING.md](TESTING.md).
+
+## Current local browser diagnostic: 21 October 2026
+
+Start the production server with `npm start`, then in another terminal run:
+
+```bash
+npm run browser:measure
+```
+
+`scripts/measure-browser.mjs` opens one fresh Chromium context at 1440 × 1100 with reduced motion and no network/CPU throttling, waits for network idle, and reads the Performance API. It writes `artifacts/browser-performance.json`. This post-refactor sample used Chromium `156.0.8078.4`, Node.js `v26.12.0`, and `http://127.0.0.1:3000`.
+
+| Diagnostic             |                                One local sample |
+| ---------------------- | ----------------------------------------------: |
+| Requested JavaScript   | 10 files; 199,308 B encoded / 662,497 B decoded |
+| Requested CSS          |      1 file; 9,389 B encoded / 41,856 B decoded |
+| First Contentful Paint |                                           72 ms |
+| DOMContentLoaded       |                                         18.4 ms |
+
+Encoded/decoded values describe script and stylesheet response bodies, not all page assets or HTTP overhead. This sample runs on the same machine as the server and is diagnostic only. It is not a Lighthouse score, field result, public-network performance claim, or cross-device benchmark. FCP and DOMContentLoaded observe different milestones and are not expected to occur in the same order. Neither local sample establishes a latency improvement.
 
 ## Local live AI observations: 21 October 2026
 
@@ -34,13 +53,7 @@ These observations demonstrate variability in successful local requests, not a c
 
 ## Historical local browser diagnostic: 20 October 2026
 
-Start the production server with `npm start`, then in another terminal run:
-
-```bash
-npm run browser:measure
-```
-
-`scripts/measure-browser.mjs` opens one fresh Chromium context at 1440 × 1100 with reduced motion and no network/CPU throttling, waits for network idle, and reads the Performance API. It writes `artifacts/browser-performance.json`. The retained **20 October** diagnostic used Chromium `156.0.8078.4`, Node.js `v24.16.0`, and `http://127.0.0.1:3000`. It was not rerun after the 21 October model/CSP update and must not be read as a current Node.js 26 measurement.
+The retained **20 October** diagnostic used the same measurement method with Chromium `156.0.8078.4`, Node.js `v24.16.0`, and `http://127.0.0.1:3000`. This historical sample predates the 21 October model/CSP and maintainability updates.
 
 | Diagnostic             |                                One local sample |
 | ---------------------- | ----------------------------------------------: |
@@ -48,8 +61,6 @@ npm run browser:measure
 | Requested CSS          |      1 file; 9,260 B encoded / 41,590 B decoded |
 | First Contentful Paint |                                           60 ms |
 | DOMContentLoaded       |                                         20.2 ms |
-
-Encoded/decoded values describe script and stylesheet response bodies, not all page assets or HTTP overhead. This sample runs on the same machine as the server and is diagnostic only. It is not a Lighthouse score, field result, public-network performance claim, or cross-device benchmark. FCP and DOMContentLoaded observe different milestones and are not expected to occur in the same order.
 
 ## Algorithm and resource behavior
 

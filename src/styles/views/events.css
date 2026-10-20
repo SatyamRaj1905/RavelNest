@@ -1,0 +1,178 @@
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.event-card {
+  padding: 24px;
+  border: 1px solid #e4e8dc;
+  border-radius: 12px;
+  background: #fff;
+}
+.event-card.is-active {
+  border-color: #a9bb92;
+  box-shadow: 0 0 0 1px #a9bb9230;
+}
+.event-card > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.event-type-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f5e7df;
+  color: #7d5d4e;
+}
+.event-type-birthday {
+  background: #f8eed8;
+  color: #75603a;
+}
+.event-type-community {
+  background: #e8f0e0;
+  color: #566845;
+}
+.event-current {
+  font-size: 9px;
+  color: #5a684a;
+  background: #edf2e5;
+  padding: 6px 7px;
+  border-radius: 5px;
+}
+.event-type-label {
+  font-size: 9px;
+  color: #5f6657;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.event-card > h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #485c3e;
+  line-height: 1.35;
+  margin: 9px 0 19px;
+  overflow-wrap: anywhere;
+}
+.event-card > p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5e6655;
+  margin: 11px 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.event-card > p > svg {
+  flex-shrink: 0;
+  color: #60665a;
+}
+.event-card > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #edf0e5;
+  margin-top: 24px;
+  padding-top: 18px;
+}
+.event-open-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  padding: 7px 0;
+  color: #566943;
+  font-size: 11px;
+  font-weight: 500;
+}
+.event-open-button:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.event-delete-button {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  color: #666256;
+  border-color: transparent;
+}
+.event-delete-button:hover {
+  color: #8f563f;
+  background: #fcf1e8;
+}
+.event-delete-confirm {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #eedacb;
+  border-radius: 7px;
+  background: #fff8f2;
+}
+.event-delete-confirm p {
+  font-size: 10px;
+  color: #835b42;
+  line-height: 1.7;
+  margin: 0 0 10px;
+}
+.event-delete-confirm > div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.event-confirm-button {
+  background: #a65f44;
+  border: 0;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 7px 9px;
+}
+.event-create-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  min-height: 320px;
+  border: 1px dashed #d8e0ca;
+  border-radius: 12px;
+  background: #f2f5ec;
+  color: #5e6650;
+  text-align: center;
+  padding: 28px;
+}
+.event-create-card > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  border: 1px dashed #ced9bd;
+  border-radius: 50%;
+}
+.event-create-card > strong {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: 21px;
+  color: #596a4b;
+}
+.event-create-card > span:last-child {
+  font-size: 11px;
+  color: #5e6554;
+}
+.event-create-card:hover {
+  background: #eaf0e1;
+  border-color: #aeba9c;
+}
+.events-storage-note {
+  margin: 24px 0 0;
+  font-size: 10px;
+  color: #5f6556;
+  line-height: 1.7;
+  text-align: center;
+}

@@ -6,7 +6,12 @@ import {
   Send,
   Sparkles,
 } from 'lucide-react';
-import type { EventPlan, EventRecord, PlanResponse } from '@/domain/contracts';
+import {
+  EVENT_LIMITS,
+  type EventPlan,
+  type EventRecord,
+  type PlanResponse,
+} from '@/domain/contracts';
 import { useGeneration } from './use-generation';
 import { applySuggestions } from '@/domain/plan-updates';
 
@@ -17,7 +22,8 @@ function AssistantResult({
   result: PlanResponse;
   onApply: () => void;
 }) {
-  const [applied, setApplied] = useState(false);
+  const [appliedResult, setAppliedResult] = useState<PlanResponse | null>(null);
+  const applied = appliedResult === result;
   return (
     <div className="assistant-result">
       <span className="source-badge">
@@ -37,7 +43,7 @@ function AssistantResult({
         disabled={applied}
         onClick={() => {
           onApply();
-          setApplied(true);
+          setAppliedResult(result);
         }}
       >
         <Check size={15} />
@@ -122,7 +128,7 @@ function AssistantComposer({
         value={prompt}
         onChange={(e) => onPrompt(e.target.value)}
         placeholder="A little help with your next big idea…"
-        maxLength={1200}
+        maxLength={EVENT_LIMITS.directionLength}
         required
       />
       <button aria-label="Send message" disabled={loading}>
@@ -157,7 +163,7 @@ export function Assistant({
       );
   }
   return (
-    <aside className="assistant-panel">
+    <aside aria-label="Planning companion" className="assistant-panel">
       <AssistantHeading />
       <div className="assistant-body">
         <AssistantIntro
@@ -171,11 +177,12 @@ export function Assistant({
           </p>
         )}
         {state.status === 'ready' && (
-          <AssistantResult
-            key={state.result.plan.summary + prompt}
-            result={state.result}
-            onApply={apply}
-          />
+          <AssistantResult result={state.result} onApply={apply} />
+        )}
+        {state.status === 'error' && (
+          <p className="error-message" role="alert">
+            {state.message}
+          </p>
         )}
       </div>
       <AssistantComposer

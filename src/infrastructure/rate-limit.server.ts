@@ -1,7 +1,8 @@
 import 'server-only';
 import { z } from 'zod';
 import type { ServerConfig } from './config.server';
-import { PublicError, readBoundedJson } from './http.server';
+import { discardBody, readBoundedJson } from './http.server';
+import { liveAiUnavailable, rateLimited } from './plan-errors.server';
 
 const WINDOW_MS = 60000;
 const LIMIT = 20;
@@ -55,7 +56,10 @@ async function distributedLimit(
     cache: 'no-store',
     redirect: 'error',
   });
-  if (!response.ok) throw new Error('Limiter unavailable.');
+  if (!response.ok) {
+    await discardBody(response);
+    throw new Error('Limiter unavailable.');
+  }
   return (
     redisResultSchema.parse(await readBoundedJson(response, 4096)).result <=
     LIMIT
@@ -64,12 +68,7 @@ async function distributedLimit(
 
 function enforceLocalLimit(request: Request): void {
   const key = request.headers.get('x-forwarded-for')?.slice(0, 120) ?? 'local';
-  if (!localLimiter.check(key))
-    throw new PublicError(
-      'RATE_LIMITED',
-      'Too many plans. Please try again in a minute.',
-      429,
-    );
+  if (!localLimiter.check(key)) throw rateLimited();
 }
 
 export async function enforceRateLimit(
@@ -78,26 +77,12 @@ export async function enforceRateLimit(
   fetcher: typeof fetch = fetch,
 ): Promise<void> {
   if (!config.production || !config.apiKey) return enforceLocalLimit(request);
-  if (!config.redisUrl || !config.redisToken)
-    throw new PublicError(
-      'SERVICE_UNAVAILABLE',
-      'Live AI is temporarily unavailable. Use the local planning option.',
-      503,
-    );
+  if (!config.redisUrl || !config.redisToken) throw liveAiUnavailable();
   let allowed: boolean;
   try {
     allowed = await distributedLimit(config, fetcher);
   } catch {
-    throw new PublicError(
-      'SERVICE_UNAVAILABLE',
-      'Live AI is temporarily unavailable. Use the local planning option.',
-      503,
-    );
+    throw liveAiUnavailable();
   }
-  if (!allowed)
-    throw new PublicError(
-      'RATE_LIMITED',
-      'Too many plans. Please try again in a minute.',
-      429,
-    );
+  if (!allowed) throw rateLimited();
 }

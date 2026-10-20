@@ -1,6 +1,7 @@
 import { blueprints } from './catalog';
 import {
   briefSchema,
+  EVENT_LIMITS,
   planSchema,
   type EventBrief,
   type EventPlan,
@@ -20,7 +21,10 @@ export function generatePlan(input: EventBrief, prompt = ''): EventPlan {
     allocated += amount;
     return { category, amount, spent: 0 };
   });
-  const preference = [brief.preferences, prompt.slice(0, 1200)]
+  const preference = [
+    brief.preferences,
+    prompt.slice(0, EVENT_LIMITS.directionLength),
+  ]
     .filter(Boolean)
     .join(' ');
   return planSchema.parse({

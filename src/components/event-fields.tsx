@@ -1,4 +1,5 @@
-import { currencies, type EventBrief } from '@/domain/contracts';
+import { currencies, EVENT_LIMITS, type EventBrief } from '@/domain/contracts';
+import { localCalendarDate } from '@/domain/format';
 
 type FieldProps = { initial?: EventBrief | undefined };
 
@@ -10,7 +11,7 @@ export function EventDetails({ initial }: FieldProps) {
         <input
           name="name"
           placeholder="e.g. Our garden wedding"
-          maxLength={100}
+          maxLength={EVENT_LIMITS.nameLength}
           required
           defaultValue={initial?.name}
         />
@@ -29,7 +30,8 @@ export function EventDetails({ initial }: FieldProps) {
           <input
             name="date"
             type="date"
-            min={new Date().toISOString().slice(0, 10)}
+            min={localCalendarDate()}
+            max={EVENT_LIMITS.maxDate}
             required
             defaultValue={initial?.date}
           />
@@ -41,9 +43,8 @@ export function EventDetails({ initial }: FieldProps) {
           <input
             name="guests"
             type="number"
-            min="1"
-            max="10000"
-            step="1"
+            min={EVENT_LIMITS.minGuests}
+            max={EVENT_LIMITS.maxGuests}
             defaultValue={initial?.guests ?? 100}
             required
           />
@@ -52,7 +53,7 @@ export function EventDetails({ initial }: FieldProps) {
           Location
           <input
             name="location"
-            maxLength={120}
+            maxLength={EVENT_LIMITS.locationLength}
             placeholder="e.g. Jaipur, India"
             required
             defaultValue={initial?.location}
@@ -72,9 +73,8 @@ export function EventPreferences({ initial }: FieldProps) {
           <input
             name="budget"
             type="number"
-            min="100"
-            max="100000000"
-            step="1"
+            min={EVENT_LIMITS.minBudget}
+            max={EVENT_LIMITS.maxBudget}
             defaultValue={initial?.budget ?? 250000}
             required
           />
@@ -93,7 +93,7 @@ export function EventPreferences({ initial }: FieldProps) {
         <textarea
           name="preferences"
           placeholder="An intimate garden celebration, earthy colors, vegetarian food… tell us what feels like you."
-          maxLength={1200}
+          maxLength={EVENT_LIMITS.directionLength}
           rows={3}
           defaultValue={initial?.preferences}
         />

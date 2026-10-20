@@ -1,4 +1,9 @@
-import { planSchema, type EventPlan, type VendorItem } from './contracts';
+import {
+  EVENT_LIMITS,
+  planSchema,
+  type EventPlan,
+  type VendorItem,
+} from './contracts';
 
 export function setBudgetSpent(
   plan: EventPlan,
@@ -10,7 +15,7 @@ export function setBudgetSpent(
       ? {
           ...item,
           spent: Number.isFinite(spent)
-            ? Math.max(0, Math.min(1000000000, Math.round(spent)))
+            ? Math.max(0, Math.min(EVENT_LIMITS.maxSpent, Math.round(spent)))
             : item.spent,
         }
       : item,

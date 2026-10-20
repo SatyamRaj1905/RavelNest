@@ -275,7 +275,7 @@ Open your configured local address and generate a fresh plan. A live result shou
 
 Do not expect production live AI with a key and empty Redis settings to work: this application's production protection rejects that request before calling Gemini. The browser then offers a labeled local fallback.
 
-For deployment, put these values in the hosting dashboard, replace `APP_ORIGIN` with the deployed origin, and redeploy. Follow [Deploy.md](Deploy.md) for Vercel or Render.
+For deployment, put these values in the hosting dashboard, replace `APP_ORIGIN` with the deployed origin, and redeploy. Follow the [deployment instructions](README.md#deployment) for Vercel or Render.
 
 ## 7. Development versus production
 
@@ -329,6 +329,6 @@ No credentials need to be generated for `APP_ORIGIN` or `GEMINI_MODEL`: you choo
 - [Gemini request adapter](src/infrastructure/gemini.server.ts)
 - [Narrative enrichment and fallback](src/application/plan-event.ts)
 - [Health endpoint](src/app/api/health/route.ts)
-- [Local setup](Setup.md) and [deployment guide](Deploy.md)
+- [Local setup](Setup.md) and [deployment instructions](README.md#deployment)
 
 This guide records the successful local live Gemini verification above and explains how to repeat it. It does not claim that production Redis, a hosted deployment, or another project's credentials have been verified.

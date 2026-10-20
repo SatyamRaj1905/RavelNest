@@ -10,7 +10,7 @@ export function createWorkspaceStore(initial: Workspace) {
   return {
     getSnapshot: () => snapshot,
     getServerSnapshot: () => initialSnapshot,
-    subscribe(listener: () => void) {
+    subscribe: (listener: () => void) => {
       listeners.add(listener);
       if (!loaded) {
         loaded = true;
@@ -33,7 +33,7 @@ export function createWorkspaceStore(initial: Workspace) {
         listeners.delete(listener);
       };
     },
-    update(transform: (workspace: Workspace) => Workspace) {
+    update: (transform: (workspace: Workspace) => Workspace) => {
       const workspace = transform(snapshot.workspace);
       let notice = '';
       try {

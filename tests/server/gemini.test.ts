@@ -34,6 +34,40 @@ afterEach(() => {
 });
 
 describe('Gemini REST boundary', () => {
+  it('preserves quota classification even when rejecting body cancellation', async () => {
+    const cancel = vi
+      .fn()
+      .mockRejectedValue(new Error('Private stream detail'));
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        new Response(new ReadableStream({ cancel }), { status: 429 }),
+      );
+    await expect(
+      generateNarrative(config, brief, plan, '', fetcher),
+    ).rejects.toMatchObject({
+      code: 'rate-limit',
+      message: 'rate-limit',
+    });
+    expect(cancel).toHaveBeenCalledOnce();
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+  it('still retries a temporary provider failure when body cancellation rejects', async () => {
+    const cancel = vi
+      .fn()
+      .mockRejectedValue(new Error('Private stream detail'));
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(
+        new Response(new ReadableStream({ cancel }), { status: 503 }),
+      )
+      .mockResolvedValueOnce(response());
+    await expect(
+      generateNarrative(config, brief, plan, '', fetcher),
+    ).resolves.toEqual(narrative);
+    expect(cancel).toHaveBeenCalledOnce();
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
   it('uses structured bounded generation and separates untrusted user data', async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(response());
     const result = await generateNarrative(

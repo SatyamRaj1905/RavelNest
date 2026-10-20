@@ -7,6 +7,7 @@ import type { ServerConfig } from './config.server';
 import { failureForStatus, normalizeAiFailure } from './gemini-errors.server';
 import { createGeminiBody } from './gemini-prompt.server';
 import { readGeminiResponse } from './gemini-response.server';
+import { discardBody } from './http.server';
 
 export { GEMINI_DEADLINE_MS } from '../domain/ai-policy';
 const MAX_PROMPT_BYTES = 16000;
@@ -52,12 +53,12 @@ export async function generateNarrative(
   try {
     let response = await fetchAttempt(config, body, controller.signal, fetcher);
     if (response.status >= 500) {
-      await response.body?.cancel();
+      await discardBody(response);
       response = await fetchAttempt(config, body, controller.signal, fetcher);
     }
     controller.signal.throwIfAborted();
     if (!response.ok) {
-      await response.body?.cancel();
+      await discardBody(response);
       throw failureForStatus(response.status);
     }
     const narrative = await readGeminiResponse(response);

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   errorResponse,
   PublicError,
@@ -23,6 +23,19 @@ const request = (body: string, headers: Record<string, string> = {}) =>
   });
 
 describe('bounded streamed JSON', () => {
+  it('cancels rejected oversized bodies without allowing cleanup errors to hide the limit', async () => {
+    const cancel = vi
+      .fn()
+      .mockRejectedValue(new Error('Private cleanup detail'));
+    const body = new ReadableStream({ cancel });
+    await expect(
+      readBoundedJson(
+        new Response(body, { headers: { 'content-length': '1000' } }),
+        5,
+      ),
+    ).rejects.toMatchObject({ code: 'PAYLOAD_TOO_LARGE', status: 413 });
+    expect(cancel).toHaveBeenCalledOnce();
+  });
   it('accepts unknown JSON only after real UTF-8 stream parsing', async () => {
     const bytes = new TextEncoder().encode('{"message":"🎉"}');
     const stream = new ReadableStream({

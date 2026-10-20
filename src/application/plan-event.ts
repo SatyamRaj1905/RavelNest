@@ -6,7 +6,7 @@ import {
   type PlanRequest,
   type PlanResponse,
 } from '../domain/contracts';
-import { narrativeSchema, type Narrative } from '../domain/narrative';
+import { personalizePlan, type Narrative } from '../domain/narrative';
 import { generatePlan } from '../domain/planner';
 import { getAiFallbackNotice } from '../domain/ai-failure';
 
@@ -30,18 +30,8 @@ export async function planEvent(
         'Demo mode · Built with the local planning engine. Add a Gemini API key to enable live personalization.',
     };
   try {
-    const narrative = narrativeSchema.parse(
-      await provider(brief, plan, prompt ?? ''),
-    );
     return planResponseSchema.parse({
-      plan: {
-        ...plan,
-        summary: narrative.summary,
-        ideas: plan.ideas.map((idea, index) => ({
-          ...idea,
-          ...narrative.ideas[index],
-        })),
-      },
+      plan: personalizePlan(plan, await provider(brief, plan, prompt ?? '')),
       source: 'gemini',
       notice:
         'Personalized with Gemini · Review this draft before saving it. Budgets and milestones use the planning engine.',

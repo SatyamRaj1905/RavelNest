@@ -37,5 +37,12 @@ export function useCreateEvent(onSave: (event: EventRecord) => void) {
       );
     }
   }
-  return { state, error, draft, submit, save, back: reset };
+  return {
+    state,
+    error: error || (state.status === 'error' ? state.message : ''),
+    draft,
+    submit,
+    save,
+    back: reset,
+  };
 }

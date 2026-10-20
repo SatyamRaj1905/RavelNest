@@ -10,6 +10,7 @@ RavelNest aims to support keyboard and assistive-technology use through semantic
 | Visible keyboard focus                                  | Help keyboard users locate the active control.                                | CSS focus rules and manual keyboard checklist.          |
 | Dialog labeling and focus management                    | Keep event creation usable without a pointer and restore context after close. | Dialog component and browser interaction tests.         |
 | Text status/source notices                              | Communicate loading, errors, save results, and demo/Gemini provenance.        | Live-region/status markup and async tests.              |
+| Named workspace landmark and safe retry feedback        | Distinguish sidebar navigation and explain failures without discarding input. | Sidebar `aria-label`, alert markup and component tests. |
 | Text values beside visual budget indicators             | Convey costs without requiring color or chart interpretation.                 | Budget view markup and axe checks.                      |
 | Responsive layouts and reduced-motion rules             | Support narrow screens and users who reduce animation.                        | Mobile browser assertions and CSS media queries.        |
 
@@ -19,11 +20,13 @@ RavelNest aims to support keyboard and assistive-technology use through semantic
 npm run test:e2e
 ```
 
-The Chromium suite uses axe to reject **serious and critical** violations in the tested states and covers keyboard/mobile journeys. See [TESTING.md](TESTING.md) for the final run result. Passing axe does not establish screen-reader usability, complete contrast coverage, all WCAG criteria, or behavior in every browser.
+The Chromium suite uses axe to reject **every reported violation**, including moderate issues, in its tested states and covers keyboard/mobile journeys. See [TESTING.md](TESTING.md) for the final run result. Passing axe does not establish screen-reader usability, complete contrast coverage, all WCAG criteria, or behavior in every browser.
 
 The local Chromium run inspected all six workspace views, the event creation form, a generated mobile preview, and the final mobile event view. A keyboard journey checks repeated Tab navigation, reverse navigation, Escape, and return to the initiating control. The mobile journey uses a 390 × 844 viewport with reduced motion and checks for page-wide overflow. The screenshots in [docs/screenshots](docs/screenshots) show the inspected desktop and mobile sample workspace.
 
-The final local run on **20 October 2026** passed all ten browser tests and found **zero serious/critical axe violations** in those audited states. The separate manual checklist below remains unverified; screenshots and automated assertions do not substitute for assistive-technology testing.
+The latest local run on **21 October 2026** passed all thirteen browser tests and found **zero axe violations at any reported severity** in those audited states. The sidebar now has the explicit landmark name **Workspace navigation**, addressing a moderate landmark issue that the earlier serious/critical filter excluded. The stricter assertion remains in the suite so lower-severity regressions fail the gate as well. A separate browser assertion verifies the bundled body font after CSS composition.
+
+Event date inputs use the user's local calendar date rather than the UTC date; regression tests cover days on either side of UTC midnight. Form lengths and numeric bounds share their canonical domain policy. Generation errors retain the draft or assistant prompt, announce a safe error, and allow another attempt. Editing a prompt does not make an already applied result appear unapplied. The separate manual checklist below remains unverified; screenshots and automated assertions do not substitute for assistive-technology testing.
 
 ## Manual assistive-technology review
 

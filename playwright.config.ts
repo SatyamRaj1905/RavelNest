@@ -17,7 +17,14 @@ export default defineConfig({
         webServer: {
           command: 'npm run start',
           url: 'http://127.0.0.1:3000',
-          reuseExistingServer: !process.env.CI,
+          env: {
+            PORT: '3000',
+            GEMINI_API_KEY: '',
+            APP_ORIGIN: 'http://127.0.0.1:3000',
+            UPSTASH_REDIS_REST_URL: '',
+            UPSTASH_REDIS_REST_TOKEN: '',
+          },
+          reuseExistingServer: false,
           timeout: 120_000,
         },
       }),

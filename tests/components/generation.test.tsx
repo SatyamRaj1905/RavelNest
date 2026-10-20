@@ -95,7 +95,7 @@ describe('cancellable generation', () => {
     expect(signal?.aborted).toBe(true);
   });
 
-  it('returns to idle after an unexpected request failure', async () => {
+  it('reports a safe actionable error after an unexpected request failure', async () => {
     mockedRequest.mockRejectedValueOnce(
       new Error('Unexpected transport failure'),
     );
@@ -103,7 +103,10 @@ describe('cancellable generation', () => {
     await act(async () => {
       await result.current.generate(fixture().brief);
     });
-    expect(result.current.state.status).toBe('idle');
+    expect(result.current.state).toEqual({
+      status: 'error',
+      message: 'Your plan could not be prepared. Please try again.',
+    });
   });
 });
 
