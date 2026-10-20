@@ -6,6 +6,8 @@ RavelNest is a GenAI-powered planning studio for weddings, birthdays, and commun
 
 Built for **Google Promptwars** using Next.js, React, TypeScript, Google Gemini, and plain CSS. The planning engine calculates the commitments; Gemini adds the personal touches.
 
+**Live application:** [ravelnest.onrender.com](https://ravelnest.onrender.com/)
+
 [Explore the product](#the-product) · [Try the showcase](#three-minute-showcase) · [See the architecture](#how-ravelnest-works) · [Run locally](#local-setup) · [Review the results](#verification)
 
 ![RavelNest event-planning workspace with budget, timeline, inspiration, and planning companion](docs/screenshots/overview.png)
@@ -137,7 +139,7 @@ The recorded local release gate on **21 October 2026** passed with the following
 
 Coverage measures domain rules, application services, infrastructure, client adapters, and selected state hooks; it does not represent coverage of all UI markup. Browser checks cover the planning journey, approved suggestions, persistence failures, invalid responses, timeout/quota notices, keyboard use, mobile layout, and automated accessibility scans.
 
-Live Gemini generation was also verified locally with `gemini-3.1-flash-lite`: the browser displayed the Gemini badge and the API returned `"source": "gemini"`. Public hosting, production Upstash connectivity, and manual assistive-technology review require separate verification. These results do not establish a hackathon score or guarantee future response times.
+Live Gemini generation was also verified locally with `gemini-3.1-flash-lite`: the browser displayed the Gemini badge and the API returned `"source": "gemini"`. Hosted Gemini generation, production Upstash connectivity, and manual assistive-technology review require separate verification. These results do not establish a hackathon score or guarantee future response times.
 
 To repeat the automated checks on macOS or Linux, stop any server using port 3000, then run:
 
